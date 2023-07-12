@@ -1,0 +1,42 @@
+{
+  "name": "subsequences",
+  "version": "1.0.1",
+  "private": false,
+  "description": "Easily generate subsequences from a provided Map, Array, or String input.",
+  "keywords": [
+    "subarray",
+    "subarrays",
+    "subsequence",
+    "subsequences",
+    "subset",
+    "subsets"
+  ],
+  "homepage": "https://github.com/pqt/subsequences",
+  "bugs": {
+    "url": "https://github.com/pqt/subsequences/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --minify",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "prettier": "@pqt/prettier-config",
+  "dependencies": {
+    "@forcir/deep-merge": "1.1.0",
+    "camelcase": "7.0.1"
+  },
+  "devDependencies": {
+    "@pqt/prettier-config": "1.0.1",
+    "@pqt/tsconfig": "1.0.1",
+    "prettier": "3.0.0",
+    "tsup": "7.1.0",
+    "typescript": "5.1.6"
+  }
+}
