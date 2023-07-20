@@ -1,5 +1,5 @@
 import camelcase from "camelcase";
-import { merge } from "@forcir/deep-merge";
+import { merge } from "object-deep-merge";
 
 function* subsets(array: Array<string>, offset = 0): Generator<Array<string>> {
   while (offset < array.length) {
@@ -12,7 +12,7 @@ function* subsets(array: Array<string>, offset = 0): Generator<Array<string>> {
   yield [];
 }
 
-const DEFAULT_SUBSEQUENCE_CONFIG: Required<Subsequence.Constructor> = {
+const DEFAULT_SUBSEQUENCE_CONFIG: Subsequence.Config = {
   camelcase: true,
   separator: "_",
 };
@@ -20,7 +20,7 @@ const DEFAULT_SUBSEQUENCE_CONFIG: Required<Subsequence.Constructor> = {
 class Subsequence<V extends string = string, K extends string = string> extends Map<K, V> {
   public constructor(
     entries?: readonly (readonly [K, V])[] | undefined,
-    config: Subsequence.Constructor = DEFAULT_SUBSEQUENCE_CONFIG,
+    config: Subsequence.Config = DEFAULT_SUBSEQUENCE_CONFIG,
   ) {
     super(entries);
 
@@ -62,8 +62,15 @@ class Subsequence<V extends string = string, K extends string = string> extends 
     }, {});
   }
 
+  public get entrySubsequences() {
+    const entries = this.entries();
+    const entriesKeyValueArray = Array.from(entries);
+    const entriesArray = entriesKeyValueArray.map(([key, value]) => [key, value].join(this.separator));
+    return Subsequence.fromArray(entriesArray);
+  }
+
   public get i18nSubsequences() {
-    return this.pairingSubsequences.reduce((previousValue, currentValue, currentIndex) => {
+    return this.entrySubsequences.reduce((previousValue, currentValue, currentIndex) => {
       const outputKey = currentValue.map((fragment) => camelcase(fragment)).join(this.separator);
 
       const keys = this.keySubsequences[currentIndex];
@@ -89,13 +96,6 @@ class Subsequence<V extends string = string, K extends string = string> extends 
     return Subsequence.fromArray(keysArray);
   }
 
-  public get pairingSubsequences() {
-    const entries = this.entries();
-    const entriesKeyValueArray = Array.from(entries);
-    const entriesArray = entriesKeyValueArray.map(([key, value]) => [key, value].join(this.separator));
-    return Subsequence.fromArray(entriesArray);
-  }
-
   public get valueSubsequences() {
     const values = this.values();
     const valuesArray = Array.from(values);
@@ -103,10 +103,10 @@ class Subsequence<V extends string = string, K extends string = string> extends 
   }
 }
 
-interface Subsequence extends Subsequence.Constructor {}
+interface Subsequence extends Subsequence.Config {}
 
 namespace Subsequence {
-  export type Constructor = { camelcase: boolean; separator: string };
+  export type Config = { camelcase: boolean; separator: string };
   export type Entry = { keyFragments: Array<string>; values: Record<string, string> };
   export type I18nPair = { key: string; values: Record<string, string> };
 }
