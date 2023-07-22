@@ -1,13 +1,15 @@
 <p align="center"></p>
 <div align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://pqt.s3.ca-central-1.amazonaws.com/subsequences/assets/images/logos/dark.png?1" height="64">
-        <img alt="Subsequences Title Image (Logo)" src="https://pqt.s3.ca-central-1.amazonaws.com/subsequences/assets/images/logos/light.png?1" height="64">
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.forcir.com/oss//subsequences/assets/images/logos/dark.png?1" height="64">
+        <img alt="Forcir Subsequences" src="https://cdn.forcir.com/oss//subsequences/assets/images/logos/light.png?1" height="64">
     </picture>
 </div>
-<p align="center"><strong>A subsequence is a sequence that can be derived from another sequence by removing zero or more elements, without changing the order of the remaining elements.</strong></p>
-
+<p align="center"><strong>Easily generate subsequences from a provided map, array, or string input.</strong></p>
 <p align="center"></p>
+
+> **Info**
+> A subsequence is a sequence that can be derived from another sequence by removing zero or more elements, without changing the order of the remaining elements.
 
 ## Install
 
