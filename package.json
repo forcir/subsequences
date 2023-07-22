@@ -11,14 +11,15 @@
     "subset",
     "subsets"
   ],
-  "homepage": "https://github.com/pqt/subsequences",
+  "homepage": "https://github.com/forcir/subsequences",
   "bugs": {
-    "url": "https://github.com/pqt/subsequences/issues"
+    "url": "https://github.com/forcir/subsequences/issues"
   },
   "license": "MIT",
   "author": {
-    "name": "Austin P",
-    "url": "https://github.com/pqt"
+    "name": "Forcir Engineering",
+    "url": "https://code.forcir.com",
+    "email": "engineering@forcir.com"
   },
   "type": "module",
   "main": "dist/index",
