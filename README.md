@@ -1,8 +1,8 @@
 <p align="center"></p>
 <div align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.forcir.com/oss/subsequences/assets/images/logos/dark.png?1" height="64">
-        <img alt="Forcir Subsequences" src="https://cdn.forcir.com/oss/subsequences/assets/images/logos/light.png?1" height="64">
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.forcir.com/oss/forcir-subsequences/assets/images/logos/dark.png" height="64">
+        <img alt="Forcir Subsequences" src="https://cdn.forcir.com/oss/forcir-subsequences/assets/images/logos/light.png" height="64">
     </picture>
 </div>
 <p align="center"><strong>Easily generate subsequences from a provided map, array, or string input.</strong></p>
