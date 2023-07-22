@@ -8,7 +8,6 @@
 <p align="center"><strong>Easily generate subsequences from a provided map, array, or string input.</strong></p>
 <p align="center"></p>
 
-> **Info**
 > A subsequence is a sequence that can be derived from another sequence by removing zero or more elements, without changing the order of the remaining elements.
 
 ## Install
