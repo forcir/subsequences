@@ -12,15 +12,21 @@ function* subsets(array: Array<string>, offset = 0): Generator<Array<string>> {
     yield [];
 }
 
-const DEFAULT_SUBSEQUENCE_CONFIG: Subsequence.Config = {
+const DEFAULT_SUBSEQUENCE_CONFIG: Config = {
     camelcase: true,
     separator: "_",
 };
 
-class Subsequence<V extends string = string, K extends string = string> extends Map<K, V> {
+class Subsequence<V extends string = string, K extends string = string>
+    extends Map<K, V>
+    implements SubsequenceInterface
+{
+    camelcase: boolean;
+    separator: string;
+
     public constructor(
         entries?: readonly (readonly [K, V])[] | undefined,
-        config: Subsequence.Config = DEFAULT_SUBSEQUENCE_CONFIG,
+        config: Config = DEFAULT_SUBSEQUENCE_CONFIG,
     ) {
         super(entries);
 
@@ -31,85 +37,77 @@ class Subsequence<V extends string = string, K extends string = string> extends 
     }
 
     public static fromArray(inputArray: Array<string>): Array<Array<string>> {
-        const subsequences: Array<Array<string>> = [];
-
-        for (const subset of subsets(inputArray)) {
-            subsequences.push(subset);
-        }
-
-        return subsequences.filter((subsequence) => subsequence.length > 0);
+        return [...subsets(inputArray)].filter((subsequence) => subsequence.length > 0);
     }
 
     public static fromString(input: string): Array<Array<string>> {
-        const inputArray = input.split("");
-
-        return Subsequence.fromArray(inputArray);
+        return Subsequence.fromArray([...input]);
     }
 
-    private composeKeyValuePairs(keys: Array<string>, values: Array<string>) {
+    private composeKeyValuePairs(keys: Array<string>, values: Array<string>): Record<string, string> {
         if (keys.length !== values.length) {
             throw `Length of keys (${keys.length}) does not match the length of values (${values.length}).`;
         }
 
-        return keys.reduce((accumulator, key, index) => {
-            key = camelcase(key);
+        const output: Record<string, string> = {};
 
+        for (const [index, key] of keys.entries()) {
+            const camelcaseKey = camelcase(key);
             const value = values[index];
+            if (value === undefined) throw `Could not find associative value for key: ${key}`;
 
-            if (typeof value === "undefined") throw `Could not find associative value for key: ${key}`;
+            output[camelcaseKey] = camelcase(value);
+        }
 
-            return { ...accumulator, [key]: camelcase(value) };
-        }, {});
+        return output;
     }
 
-    public get entrySubsequences() {
+    public get entrySubsequences(): Array<Array<string>> {
         const entries = this.entries();
-        const entriesKeyValueArray = Array.from(entries);
-        const entriesArray = entriesKeyValueArray.map(([key, value]) => [key, value].join(this.separator));
+        const entriesArray = [...entries].map(([key, value]) => [key, value].join(this.separator));
         return Subsequence.fromArray(entriesArray);
     }
 
-    public get i18nSubsequences() {
-        return this.entrySubsequences.reduce((previousValue, currentValue, currentIndex) => {
-            const outputKey = currentValue.map((fragment) => camelcase(fragment)).join(this.separator);
+    public get i18nSubsequences(): Array<I18nPair> {
+        let output: Array<I18nPair> = [];
 
-            const keys = this.keySubsequences[currentIndex];
-            const values = this.valueSubsequences[currentIndex];
+        for (const [index, entry] of this.entrySubsequences.entries()) {
+            const outputKey = entry.map((fragment) => camelcase(fragment)).join(this.separator);
+
+            const keys = this.keySubsequences[index];
+            const values = this.valueSubsequences[index];
 
             if (!keys) throw `Could not find associated keys for key ${outputKey}`;
             if (!values) throw `Could not find associated values for key ${outputKey}`;
 
             const outputValues = this.composeKeyValuePairs(keys, values);
 
-            const output: Subsequence.I18nPair = {
+            const pair: I18nPair = {
                 key: outputKey,
                 values: outputValues,
             };
 
-            return [...previousValue, output];
-        }, [] as Array<Subsequence.I18nPair>);
+            output = [...output, pair];
+        }
+
+        return output;
     }
 
-    public get keySubsequences() {
-        const keys = this.keys();
-        const keysArray = Array.from(keys);
-        return Subsequence.fromArray(keysArray);
+    public get keySubsequences(): Array<Array<string>> {
+        return Subsequence.fromArray([...this.keys()]);
     }
 
-    public get valueSubsequences() {
-        const values = this.values();
-        const valuesArray = Array.from(values);
-        return Subsequence.fromArray(valuesArray);
+    public get valueSubsequences(): Array<Array<string>> {
+        return Subsequence.fromArray([...this.values()]);
     }
 }
 
-interface Subsequence extends Subsequence.Config {}
+interface SubsequenceInterface extends Config {}
 
-namespace Subsequence {
-    export type Config = { camelcase: boolean; separator: string };
-    export type Entry = { keyFragments: Array<string>; values: Record<string, string> };
-    export type I18nPair = { key: string; values: Record<string, string> };
-}
+type Config = { camelcase: boolean; separator: string };
+type Entry = { keyFragments: Array<string>; values: Record<string, string> };
+type I18nPair = { key: string; values: Record<string, string> };
 
 export { Subsequence };
+export type { Config, Entry, I18nPair };
 export default { Subsequence };
