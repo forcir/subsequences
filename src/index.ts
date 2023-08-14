@@ -1,6 +1,8 @@
 import camelcase from "camelcase";
 import { merge } from "object-deep-merge";
 
+import type { Config, I18nPair, SubsequenceInterface } from "./types.js";
+
 function* subsets(array: Array<string>, offset = 0): Generator<Array<string>> {
     while (offset < array.length) {
         const first = array[offset++];
@@ -17,15 +19,15 @@ const DEFAULT_SUBSEQUENCE_CONFIG: Config = {
     separator: "_",
 };
 
-class Subsequence<V extends string = string, K extends string = string>
-    extends Map<K, V>
+class Subsequence<TValue extends string = string, TKey extends string = string>
+    extends Map<TKey, TValue>
     implements SubsequenceInterface
 {
     camelcase: boolean;
     separator: string;
 
     public constructor(
-        entries?: readonly (readonly [K, V])[] | undefined,
+        entries?: readonly (readonly [TKey, TValue])[] | undefined,
         config: Config = DEFAULT_SUBSEQUENCE_CONFIG,
     ) {
         super(entries);
@@ -69,7 +71,7 @@ class Subsequence<V extends string = string, K extends string = string>
     }
 
     public get i18nSubsequences(): Array<I18nPair> {
-        let output: Array<I18nPair> = [];
+        const output: Array<I18nPair> = [];
 
         for (const [index, entry] of this.entrySubsequences.entries()) {
             const outputKey = entry.map((fragment) => camelcase(fragment)).join(this.separator);
@@ -87,7 +89,7 @@ class Subsequence<V extends string = string, K extends string = string>
                 values: outputValues,
             };
 
-            output = [...output, pair];
+            output.push(pair);
         }
 
         return output;
@@ -102,12 +104,6 @@ class Subsequence<V extends string = string, K extends string = string>
     }
 }
 
-interface SubsequenceInterface extends Config {}
-
-type Config = { camelcase: boolean; separator: string };
-type Entry = { keyFragments: Array<string>; values: Record<string, string> };
-type I18nPair = { key: string; values: Record<string, string> };
-
 export { Subsequence };
-export type { Config, Entry, I18nPair };
 export default { Subsequence };
+export * from "./types.js";
