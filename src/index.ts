@@ -1,8 +1,6 @@
 import camelcase from "camelcase";
 import { merge } from "object-deep-merge";
 
-import type { Config, I18nPair, SubsequenceInterface } from "./types.js";
-
 function* subsets(array: Array<string>, offset = 0): Generator<Array<string>> {
     while (offset < array.length) {
         const first = array[offset++];
@@ -104,6 +102,12 @@ class Subsequence<TValue extends string = string, TKey extends string = string>
     }
 }
 
+interface SubsequenceInterface extends Config {}
+
+type Config = { camelcase: boolean; separator: string };
+type Entry = { keyFragments: Array<string>; values: Record<string, string> };
+type I18nPair = { key: string; values: Record<string, string> };
+
 export { Subsequence };
 export default { Subsequence };
-export * from "./types.js";
+export type { Config, Entry, I18nPair, SubsequenceInterface };
