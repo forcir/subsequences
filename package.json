@@ -1,6 +1,6 @@
 {
     "name": "subsequences",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "private": false,
     "description": "Easily generate subsequences from a provided map, array, or string input.",
     "keywords": [
